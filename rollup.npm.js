@@ -32,7 +32,7 @@ const globals = {
   'react-json-view': 'ReactJson',
   mousetrap: 'Mousetrap',
   'socket.io-client': 'io',
-  'fast-shuffle': 'shuffle',
+  'fisher-yates': 'shuffle',
 };
 
 export default [
