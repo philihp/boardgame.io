@@ -7,11 +7,7 @@
  */
 
 import { alea } from './random.alea';
-<<<<<<< HEAD
-import shuffle from 'fast-shuffle';
-=======
 import shuffle from 'fisher-yates';
->>>>>>> deterministic array shuffling
 
 export const DICE = 'DICE';
 export const NUMBER = 'NUMBER';
