@@ -115,6 +115,7 @@
     "koa-socket": "^4.4.0",
     "koa-static": "^4.0.1",
     "mousetrap": "^1.6.1",
+    "object-path": "^0.11.4",
     "prop-types": "^15.5.10",
     "react-json-view": "^1.13.0",
     "react-redux": "^5.0.6",

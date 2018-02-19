@@ -8,6 +8,7 @@
 
 import { alea } from './random.alea';
 import shuffle from 'fisher-yates';
+import objectPath from 'object-path';
 
 export const DICE = 'DICE';
 export const NUMBER = 'NUMBER';
@@ -70,7 +71,11 @@ export function evaluaterandomops(G, ctx) {
 
         case SHUFFLE: {
           const rng = alea(randomnumber);
-          G[r.fieldname] = shuffle(G[r.fieldname], rng);
+          objectPath.set(
+            G,
+            r.fieldname,
+            shuffle(objectPath.get(G, r.fieldname), rng)
+          );
           break;
         }
 
