@@ -7,8 +7,8 @@
  */
 
 import { alea } from './random.alea';
-import shuffle from 'fisher-yates';
-import objectPath from 'object-path';
+import shuffle from 'fast-shuffle';
+import immutable from 'object-path-immutable';
 
 export const DICE = 'DICE';
 export const NUMBER = 'NUMBER';
@@ -70,11 +70,15 @@ export function evaluaterandomops(G, ctx) {
         }
 
         case SHUFFLE: {
-          const rng = alea(randomnumber);
-          objectPath.set(
-            G,
-            r.fieldname,
-            shuffle(objectPath.get(G, r.fieldname), rng)
+          let sourceValue = undefined;
+          // TODO: this is a stupid way of doing a "get"
+          immutable.update(G, r.fieldname, v => {
+            sourceValue = v;
+            return v;
+          });
+          randomresults[r.fieldname] = shuffle(
+            sourceValue,
+            new alea(randomnumber)
           );
           break;
         }
@@ -89,9 +93,19 @@ export function evaluaterandomops(G, ctx) {
 }
 
 export function RunRandom(G, ctx) {
-  let { randomresults, ctx: ctx2 } = evaluaterandomops(G, ctx);
-  const G2 = { ...G, ...randomresults, _randomOps: undefined };
-  return { G: G2, ctx: ctx2 };
+  const { randomresults, ctx: ctx2 } = evaluaterandomops(G, ctx);
+  const resultsArray = Object.entries(randomresults);
+  G = resultsArray.reduce(
+    (a, [key, value]) => immutable.update(a, key, () => value),
+    G
+  );
+  return {
+    G: {
+      ...G,
+      _randomOps: undefined,
+    },
+    ctx: ctx2,
+  };
 }
 
 const SpotValue = {

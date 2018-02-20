@@ -33,7 +33,7 @@ const globals = {
   mousetrap: 'Mousetrap',
   'socket.io-client': 'io',
   'fast-shuffle': 'shuffle',
-  'object-path': 'objectPath',
+  'object-path-immutable': 'immutable',
 };
 
 export default [
