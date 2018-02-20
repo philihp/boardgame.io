@@ -129,6 +129,30 @@ test('Random.Shuffle', () => {
   expect(ctx).not.toMatchObject(ctx2);
 });
 
+test('Random.D6 works on a nested attribute', () => {
+  let ctx = { random: { seed: 'some_predetermined_seed' } };
+  let G = {
+    suspense: 9000,
+    players: {
+      0: {
+        points: 100,
+      },
+      1: {
+        points: 200,
+      },
+    },
+  };
+
+  let G2 = G;
+  G2 = Random.D6(G2, 'players.0.attackerDie');
+  G2 = Random.D6(G2, 'players.1.defenderDie');
+  let { G: G3 } = RunRandom(G2, ctx);
+
+  expect(G3.players['0'].attackerDie).toBe(2);
+  expect(G3.players['1'].defenderDie).toBe(4);
+  expect(G3).toMatchObject(G);
+});
+
 test('Random.Shuffle works on a nested attribute', () => {
   let ctx = { random: { seed: 'some_predetermined_seed' } };
   const tiles = ['A', 'B', 'C', 'D', 'E'];
@@ -145,4 +169,30 @@ test('Random.Shuffle works on a nested attribute', () => {
   expect(G.players['1']).toMatchObject(tiles); // this was the tricky one :(
   expect(G3.players['0']).toMatchObject(tiles);
   expect(G3.players['1']).not.toMatchObject(tiles);
+});
+
+test('Random.D6 only mutates necessary objects', () => {
+  let ctx = { random: { seed: 'some_predetermined_seed' } };
+  let G = {
+    universe: 42,
+    players: {
+      0: {
+        hp: 20,
+        inventory: ['sword', 'shield'],
+      },
+      1: {
+        hp: 14,
+        inventory: ['staff', 'bracers'],
+      },
+    },
+  };
+
+  let G2 = Random.D20(G, 'players.0.savingThrow');
+  let { G: G3 } = RunRandom(G2, ctx);
+  expect(G3.universe).toBe(42);
+  expect(G3.players['0'].hp).toBe(20);
+  expect(G3.players['0'].inventory).toBe(G.players['0'].inventory);
+  expect(G3.players['1']).toBe(G.players['1']);
+  expect(G.players['0'].savingThrow).not.toBeDefined();
+  expect(G3.players['0'].savingThrow).toBeDefined();
 });
