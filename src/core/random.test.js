@@ -146,3 +146,51 @@ test('Random.Shuffle works on a nested attribute', () => {
   expect(G3.players['0']).toMatchObject(tiles);
   expect(G3.players['1']).not.toMatchObject(tiles);
 });
+
+test('Random.D6 works on a nested attribute', () => {
+  let ctx = { random: { seed: 'some_predetermined_seed' } };
+  let G = {
+    suspense: 9000,
+    players: {
+      0: {
+        points: 100,
+      },
+      1: {
+        points: 200,
+      },
+    },
+  };
+
+  let G2 = G;
+  G2 = Random.D6(G2, 'players.0.attackerDie');
+  G2 = Random.D6(G2, 'players.1.defenderDie');
+  let { G: G3 } = RunRandom(G2, ctx);
+
+  expect(G3.players['0'].attackerDie).toBe(2);
+  expect(G3.players['1'].defenderDie).toBe(4);
+  expect(G3).toMatchObject(G);
+});
+
+test('Random.Shuffle works on a nested attribute', () => {
+  let ctx = { random: { seed: 'hi there' } };
+  const tiles = ['A', 'B', 'C', 'D', 'E'];
+  let G = {
+    universe: 42,
+    players: {
+      A: tiles,
+      B: tiles,
+      C: null,
+    },
+  };
+
+  let G2 = Random.Shuffle(G, 'players.A');
+  let { G: G3 } = RunRandom(G2, ctx);
+  expect(G.universe).toBe(42);
+  expect(G.players.A).toMatchObject(tiles);
+  expect(G.players.B).toMatchObject(tiles);
+  expect(G.players.C).toBeNull();
+  expect(G3.universe).toBe(42);
+  expect(G3.players.A).not.toMatchObject(tiles);
+  expect(G3.players.B).toMatchObject(tiles);
+  expect(G3.players.C).toBeNull();
+});
