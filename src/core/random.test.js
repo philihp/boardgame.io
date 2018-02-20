@@ -129,24 +129,6 @@ test('Random.Shuffle', () => {
   expect(ctx).not.toMatchObject(ctx2);
 });
 
-test('Random.Shuffle works on a nested attribute', () => {
-  let ctx = { random: { seed: 'some_predetermined_seed' } };
-  const tiles = ['A', 'B', 'C', 'D', 'E'];
-  let G = {
-    players: {
-      0: tiles,
-      1: tiles,
-    },
-  };
-
-  let G2 = Random.Shuffle(G, 'players.1');
-  let { G: G3 } = RunRandom(G2, ctx);
-  expect(G.players['0']).toMatchObject(tiles);
-  expect(G.players['1']).toMatchObject(tiles); // this was the tricky one :(
-  expect(G3.players['0']).toMatchObject(tiles);
-  expect(G3.players['1']).not.toMatchObject(tiles);
-});
-
 test('Random.D6 works on a nested attribute', () => {
   let ctx = { random: { seed: 'some_predetermined_seed' } };
   let G = {
@@ -172,25 +154,45 @@ test('Random.D6 works on a nested attribute', () => {
 });
 
 test('Random.Shuffle works on a nested attribute', () => {
-  let ctx = { random: { seed: 'hi there' } };
+  let ctx = { random: { seed: 'some_predetermined_seed' } };
   const tiles = ['A', 'B', 'C', 'D', 'E'];
   let G = {
-    universe: 42,
     players: {
-      A: tiles,
-      B: tiles,
-      C: null,
+      0: tiles,
+      1: tiles,
     },
   };
 
-  let G2 = Random.Shuffle(G, 'players.A');
+  let G2 = Random.Shuffle(G, 'players.1');
   let { G: G3 } = RunRandom(G2, ctx);
-  expect(G.universe).toBe(42);
-  expect(G.players.A).toMatchObject(tiles);
-  expect(G.players.B).toMatchObject(tiles);
-  expect(G.players.C).toBeNull();
+  expect(G.players['0']).toMatchObject(tiles);
+  expect(G.players['1']).toMatchObject(tiles); // this was the tricky one :(
+  expect(G3.players['0']).toMatchObject(tiles);
+  expect(G3.players['1']).not.toMatchObject(tiles);
+});
+
+test('Random.D6 only mutates necessary objects', () => {
+  let ctx = { random: { seed: 'some_predetermined_seed' } };
+  let G = {
+    universe: 42,
+    players: {
+      0: {
+        hp: 20,
+        inventory: ['sword', 'shield'],
+      },
+      1: {
+        hp: 14,
+        inventory: ['staff', 'bracers'],
+      },
+    },
+  };
+
+  let G2 = Random.D20(G, 'players.0.savingThrow');
+  let { G: G3 } = RunRandom(G2, ctx);
   expect(G3.universe).toBe(42);
-  expect(G3.players.A).not.toMatchObject(tiles);
-  expect(G3.players.B).toMatchObject(tiles);
-  expect(G3.players.C).toBeNull();
+  expect(G3.players['0'].hp).toBe(20);
+  expect(G3.players['0'].inventory).toBe(G.players['0'].inventory);
+  expect(G3.players['1']).toBe(G.players['1']);
+  expect(G.players['0'].savingThrow).not.toBeDefined();
+  expect(G3.players['0'].savingThrow).toBeDefined();
 });
