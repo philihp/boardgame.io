@@ -1,10 +1,14 @@
 {
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": [
+    "plugin:unicorn/recommended",
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
   "env": {
     "node": true,
     "browser": true,
     "jest/globals": true,
-    "es6": true,
+    "es6": true
   },
   "parser": "babel-eslint",
   "plugins": ["react", "jest"],
@@ -13,6 +17,15 @@
     "no-param-reassign": "off",
     "no-tabs": "error",
     "no-trailing-spaces": "error",
-    "space-infix-ops": ["error", {"int32Hint": false}],
+    "space-infix-ops": ["error", { "int32Hint": false }],
+    "unicorn/filename-case": 0,
+    "unicorn/import-index": 0,
+    "unicorn/no-abusive-eslint-disable": 0,
+    "unicorn/prefer-spread": 0,
+    "unicorn/new-for-builtins": 0,
+    "unicorn/number-literal-case": 0,
+    "unicorn/regex-shorthand": 0,
+    "unicorn/catch-error-name": 0,
+    "unicorn/explicit-length-check": 0
   }
 }
