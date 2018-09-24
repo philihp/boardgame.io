@@ -42,7 +42,7 @@ class Board extends React.Component {
     selected: '',
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.G.pgn) {
       this.chess.load_pgn(nextProps.G.pgn);
       this.setState({ selected: '' });

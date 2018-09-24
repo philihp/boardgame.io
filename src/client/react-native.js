@@ -75,7 +75,7 @@ export function Client(opts) {
       this.client.subscribe(() => this.forceUpdate());
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       if (nextProps.gameID != this.props.gameID) {
         this.client.updateGameID(nextProps.gameID);
       }
@@ -87,7 +87,7 @@ export function Client(opts) {
       }
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
       this.client.connect();
     }
 

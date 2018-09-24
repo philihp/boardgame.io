@@ -19,7 +19,7 @@ export class MCTSRoot extends React.Component {
     style: PropTypes.any,
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({ root: nextProps.root });
   }
 
