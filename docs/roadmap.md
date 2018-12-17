@@ -13,9 +13,9 @@ get done before we are ready for a v1 release.
 
 ### UI framework
 
-* [x] Drag and Drop (cards and decks).
-* [ ] Drag and Drop (tokens and grids).
-* [ ] 3D components ([issue](https://github.com/nicolodavis/boardgame.io/issues/282))
+* [x] Drag and Drop (cards and decks)
+* [ ] Drag and Drop (tokens and grids)
+* [ ] 3D components ([issue](https://github.com/nicolodavis/boardgame.io/issues/282)) **[N]**
 
 ### Lobby
 
@@ -24,19 +24,21 @@ get done before we are ready for a v1 release.
 
 ### Storage
 
-* ##### Mongo
+* ##### Databases
 
   * [x] add Mongo support
-  * [ ] add error handling **[help needed]**
+  * [x] add Firebase support
+  * [ ] add Postgres support
+  
+* ##### Size / Performance
 
-* ##### Firebase / Other
-
-  * [x] add support for one more backend (Firebase?)
+  * [ ] Explore MessagePack or other compression scheme
 
 ### Core
 
-* [ ] turn order improvements ([issue](https://github.com/nicolodavis/boardgame.io/issues/154)) **[N]**
+* [ ] turn order improvements ([issue](https://github.com/nicolodavis/boardgame.io/issues/154))
 * [ ] log improvements ([issue](https://github.com/nicolodavis/boardgame.io/issues/227))
+* [x] add immutability helper (Immer) ([issue](https://github.com/nicolodavis/boardgame.io/issues/295))
 
 ### Server
 

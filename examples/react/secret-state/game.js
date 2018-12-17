@@ -20,6 +20,12 @@ const SecretState = Game({
     },
   }),
 
+  moves: {
+    clickCell(G) {
+      return { ...G };
+    },
+  },
+
   playerView: PlayerView.STRIP_SECRETS,
 });
 

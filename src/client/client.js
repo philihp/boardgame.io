@@ -93,6 +93,7 @@ class _ClientImpl {
     this.credentials = credentials;
     this.multiplayer = multiplayer;
     this.subscribeCallback = () => {};
+    this.isSynced = false;
 
     this.reducer = CreateGameReducer({
       game,
@@ -157,13 +158,26 @@ class _ClientImpl {
         }
 
         case Actions.UPDATE: {
-          const deltalog = action.deltalog || [];
+          let id = -1;
+          if (this.log.length > 0) {
+            id = this.log[this.log.length - 1]._stateID;
+          }
+
+          let deltalog = action.deltalog || [];
+
+          // Filter out actions that are already present
+          // in the current log. This may occur when the
+          // client adds an entry to the log followed by
+          // the update from the master here.
+          deltalog = deltalog.filter(l => l._stateID > id);
+
           this.log = [...this.log, ...deltalog];
           break;
         }
 
         case Actions.SYNC: {
           this.log = action.log || [];
+          this.isSynced = true;
           break;
         }
       }
@@ -276,7 +290,7 @@ class _ClientImpl {
     const G = this.game.playerView(state.G, state.ctx, this.playerID);
 
     // Combine into return value.
-    let ret = { ...state, isActive, G, log: this.log };
+    let ret = { ...state, isActive, isSynced: this.isSynced, G, log: this.log };
 
     const isConnected = this.transport.isConnected;
     ret = { ...ret, isConnected };
@@ -298,7 +312,7 @@ class _ClientImpl {
     );
 
     this.events = createEventDispatchers(
-      this.game.flow.eventNames,
+      this.game.flow.enabledEventNames,
       this.store,
       this.playerID,
       this.credentials,

@@ -6,6 +6,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
+import produce from 'immer';
 import { FlowWithPhases } from './flow';
 
 /**
@@ -47,11 +48,11 @@ import { FlowWithPhases } from './flow';
  *     endGameIf: (G, ctx) => { ... },
  *     endTurnIf: (G, ctx) => { ... },
  *
- *     phases: [
- *       { name: 'A', setup: (G, ctx) => G, cleanup: (G, ctx) => G },
- *       { name: 'B', setup: (G, ctx) => G, cleanup: (G, ctx) => G },
+ *     phases: {
+ *       A: { onPhaseBegin: (G, ctx) => G, onPhaseEnd: (G, ctx) => G },
+ *       B: { onPhaseBegin: (G, ctx) => G, onPhaseEnd: (G, ctx) => G },
  *       ...
- *     ]
+ *     }
  *   },
  * })
  *
@@ -89,10 +90,10 @@ function Game({ name, setup, moves, playerView, flow, seed }) {
     moveNames: Object.getOwnPropertyNames(moves),
     processMove: (G, action, ctx) => {
       if (moves.hasOwnProperty(action.type)) {
-        const context = { playerID: action.playerID };
         const ctxWithPlayerID = { ...ctx, playerID: action.playerID };
         const args = [G, ctxWithPlayerID].concat(action.args);
-        return moves[action.type].apply(context, args);
+        const fn = produce(moves[action.type]);
+        return fn(...args);
       }
       return G;
     },
